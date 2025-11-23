@@ -1,132 +1,168 @@
-# DTP Data Pipeline Repository
+# LLM-Supervised-Fine-Tuning
 
-Pipeline ini dirancang untuk **membersihkan, memproses, dan menyiapkan dataset** dalam skala besar (±40K baris) untuk digunakan pada proses **Supervised Fine-Tuning (SFT)** dan **Direct Preference Optimization (DPO)**.
-
----
-
-## Fitur Utama
-- Pembersihan data (duplicate removal, normalisasi whitespace, filter baris kosong).
-- Preprocessing format standar: `instruction`, `input`, `output`.
-- Validasi panjang teks & encoding.
-- Splitting dataset: train / validation / test.
-- Ekspor dalam format JSON / Parquet / CSV.
+A comprehensive repository for supervised fine-tuning of large language models (LLMs) using state-of-the-art techniques and scalable workflows. This project empowers researchers and engineers to efficiently adapt pre-trained LLMs to custom datasets for specialized downstream tasks.
 
 ---
 
-## Struktur dalam bentuk Tree
-```
-dtp-data-pipeline/
-│
-├── data_raw/             # Data mentah sebelum diproses
-├── data_processed/       # Data hasil cleaning & preprocessing
-├── scripts/              # Script Python untuk pipeline
-│   ├── clean_data.py
-│   ├── preprocess.py
-│   ├── split_dataset.py
-│   └── export.py
-├── configs/              # Config YAML untuk pipeline
-│   └── default_config.yaml
-├── docs/                 # Dokumentasi pipeline hasil pengerjaan disini
-│   ├── data_format.md
-│   └── pipeline_overview.md
-├── tests/                # Unit tests untuk pipeline
-│   └── test_clean_data.py
-├── requirements.txt      # Dependensi Python
-├── git-set-me.sh         # Script untuk set identitas Git per user
-└── README.md             # Dokumentasi utama repo ini
-```
----
+## Introduction
 
-## Struktur Direktori Tree Visualize
-
-```mermaid
-graph TD
-    A[llm-data-pipeline]
-    A --> B[configs]
-    A --> C[data_raw]
-    A --> D[data_processed]
-    A --> E[exports]
-    A --> F[notebooks]
-    A --> G[scripts]
-    A --> H[tests]
-    A --> I[docs]
-    A --> J[.gitignore]
-    A --> K[README.md]
-    A --> L[requirements.txt]
-
-    B:::folder
-    C:::folder
-    D:::folder
-    E:::folder
-    F:::folder
-    G:::folder
-    H:::folder
-    I:::folder
-
-    classDef folder fill:#f9f,stroke:#333,stroke-width:2px;
-```
+LLM-Supervised-Fine-Tuning offers a modular, extensible framework for supervised fine-tuning of transformer-based language models. The repository supports flexible data pipelines, advanced training strategies, and integrated experiment tracking. It is designed for both academic research and production deployment, making model adaptation accessible and reproducible.
 
 ---
 
-## Instalasi
-### 1. Clone Repo (Gaperlu diclone karena udah diclone, kecuali maw taruh dilocal)
-```bash
-git clone https://github.com/org/llm-data-pipeline.git
-cd dtp-data-pipeline
-```
+## Features
 
-### 2. Buat Virtual Environment (bebas dari temen-temen)
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+- Fine-tune popular LLM architectures (e.g., GPT, LLaMA, Falcon).
+- Support for modern datasets in various formats (JSON, CSV, Parquet).
+- Scalable training on single and multi-GPU environments.
+- Integrated experiment logging with tools like TensorBoard and Weights & Biases.
+- Configurable training, evaluation, and inference pipelines.
+- Checkpointing, early stopping, and learning rate scheduling.
+- Modular codebase for easy customization and extension.
 
-### 3. Install Dependensi
+---
+
+## Requirements
+
+Ensure your environment meets the following requirements:
+
+- Python 3.8 or higher
+- PyTorch (>=1.10)
+- Transformers library (>=4.20)
+- Datasets library (>=2.0)
+- Additional dependencies:
+  - tqdm
+  - numpy
+  - pandas
+  - tensorboard
+  - wandb (optional for experiment tracking)
+
+Install requirements via pip:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## Cara Menjalankan Pipeline (ini formalnya aja karena sesuai direktori)
-### 1. Cleaning
-```bash
-python scripts/clean_data.py --input data_raw/raw.json --output data_processed/cleaned.json
-```
+## Installation
 
-### 2. Preprocessing
-```bash
-python scripts/preprocess.py --input data_processed/cleaned.json --output data_processed/preprocessed.json
-```
+Follow these steps to set up the repository:
 
-### 3. Splitting
-```bash
-python scripts/split_dataset.py --input data_processed/preprocessed.json --train 0.8 --val 0.1 --test 0.1
-```
-
-### 4. Export
-```bash
-python scripts/export.py --input data_processed/preprocessed.json --format parquet
-```
-
----
-
-## Dokumentasi Tambahan (Usahakan taruh di direktori docs)
-- [Data Format](docs/data_format.md) → Spesifikasi format dataset (instruction/input/output).
-- [Pipeline Overview](docs/pipeline_overview.md) → Diagram alur pipeline & penjelasan step.
-
----
-
-## How to Contribute? kek gini
-1. Set identitas Git per repo (Wajib dilakuin):
+1. **Clone the Repository:**
    ```bash
-   ./git-set-me.sh "Nama Lengkap" email@example.com
+   git clone https://github.com/NaufalArsa/LLM-Supervised-Fine-Tuning.git
+   cd LLM-Supervised-Fine-Tuning
    ```
-2. Buat branch baru untuk fitur/pekerjaan (sesuaikan dengan task temen-temen):
+
+2. **Install Dependencies:**
    ```bash
-   git checkout -b feature/nama-fitur
+   pip install -r requirements.txt
    ```
-3. Commit & push seperti biasa.
+
+3. **(Optional) Set Up Weights & Biases:**
+   Register at [wandb.ai](https://wandb.ai/) and log in:
+   ```bash
+   wandb login
+   ```
 
 ---
 
+## Usage
+
+Fine-tune an LLM on your dataset with the provided training scripts. The typical workflow involves preparing the data, configuring the model, and running the training command.
+
+### 1. Prepare Data
+
+Format your dataset in JSON, CSV, or Parquet. Ensure fields match the model's requirements (e.g., `input`, `output`).
+
+### 2. Configure Training
+
+Edit the `config.yaml` or `train_config.json` file with your model, data, and training parameters.
+
+### 3. Run Training
+
+Command-line example:
+
+```bash
+python train.py \
+  --config configs/train_config.yaml \
+  --data_path data/my_dataset.json \
+  --output_dir outputs/my_experiment/
+```
+
+### 4. Evaluate and Inference
+
+Evaluate the fine-tuned model:
+
+```bash
+python evaluate.py \
+  --model_path outputs/my_experiment/checkpoint-1000 \
+  --eval_data data/validation.json
+```
+
+Run inference on new data:
+
+```bash
+python infer.py \
+  --model_path outputs/my_experiment/best_model \
+  --input_text "Your prompt here"
+```
+
+---
+
+## Configuration
+
+Fine-tuning is fully configurable via YAML or JSON files. Typical parameters include:
+
+- `model_name_or_path`: Pre-trained model checkpoint (e.g., `gpt2`, `facebook/llama-7b`)
+- `learning_rate`: Set the optimizer learning rate.
+- `batch_size`: Choose batch sizes per device.
+- `num_epochs`: Total training epochs.
+- `logging`: Enable or disable logging to TensorBoard/WandB.
+- `save_steps`: Set checkpointing frequency.
+- `early_stopping`: Enable and configure early stopping.
+- `max_seq_length`: Specify token sequence length.
+
+Sample YAML configuration:
+
+```yaml
+model_name_or_path: gpt2
+learning_rate: 5e-5
+batch_size: 8
+num_epochs: 3
+logging: true
+save_steps: 500
+early_stopping: true
+max_seq_length: 512
+```
+
+---
+
+## Contributing
+
+We welcome contributions! Please follow these guidelines:
+
+- Fork the repository and create a new branch for your feature or bugfix.
+- Write clear, concise commit messages.
+- Ensure code passes linting and all tests.
+- Document new features in the README and code comments.
+- Submit a pull request with a detailed description of your changes.
+
+For major changes, open an issue to discuss your proposal first.
+
+---
+
+## License
+
+MIT License
+
+Copyright (c) Naufal Arsa
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
